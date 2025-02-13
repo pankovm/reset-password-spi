@@ -11,9 +11,12 @@ import org.keycloak.provider.ProviderConfigProperty;
 import java.util.List;
 
 public class CustomPasswordResetAuthenticatorFactory implements AuthenticatorFactory {
+    public static final String PROVIDER_ID = "custom-password-reset-authenticator";
+    public static final String PASSWORD_MIN_LENGTH = "passwordMinLength";
+
     @Override
     public String getDisplayType() {
-        return "";
+        return "Custom password reset authenticator";
     }
 
     @Override
@@ -23,12 +26,19 @@ public class CustomPasswordResetAuthenticatorFactory implements AuthenticatorFac
 
     @Override
     public boolean isConfigurable() {
-        return false;
+        return true;
     }
 
     @Override
     public AuthenticationExecutionModel.Requirement[] getRequirementChoices() {
-        return new AuthenticationExecutionModel.Requirement[0];
+        return getRequirements();
+    }
+
+    private AuthenticationExecutionModel.Requirement[] getRequirements() {
+        return new AuthenticationExecutionModel.Requirement[]{
+                AuthenticationExecutionModel.Requirement.REQUIRED,
+                AuthenticationExecutionModel.Requirement.DISABLED
+        };
     }
 
     @Override
@@ -38,17 +48,19 @@ public class CustomPasswordResetAuthenticatorFactory implements AuthenticatorFac
 
     @Override
     public String getHelpText() {
-        return "";
+        return "Validates password before reset";
     }
 
     @Override
     public List<ProviderConfigProperty> getConfigProperties() {
-        return List.of();
+        return List.of(
+                new ProviderConfigProperty(PASSWORD_MIN_LENGTH, "Password minimal length", "Set minimal length for password", ProviderConfigProperty.STRING_TYPE, "")
+        );
     }
 
     @Override
     public Authenticator create(KeycloakSession session) {
-        return null;
+        return new CustomPasswordResetAuthenticator();
     }
 
     @Override
@@ -68,6 +80,6 @@ public class CustomPasswordResetAuthenticatorFactory implements AuthenticatorFac
 
     @Override
     public String getId() {
-        return "";
+        return PROVIDER_ID;
     }
 }
