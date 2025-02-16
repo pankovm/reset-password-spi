@@ -33,6 +33,7 @@ public class CustomPasswordResetAuthenticator implements Authenticator {
             return;
         }
 
+        context.getAuthenticationSession().setAuthNote(PASSWORD, password);
         context.success();
     }
 
